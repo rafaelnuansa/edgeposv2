@@ -1,0 +1,16 @@
+[04-Dec-2023 01:24:47 America/New_York] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Route" not found in /home/edgehyph/v2.edgepos.site/routes/api.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/edgehyph/v2.edgepos.site/routes/api.php on line 7
+[04-Dec-2023 01:24:47 America/New_York] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Broadcast" not found in /home/edgehyph/v2.edgepos.site/routes/channels.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/edgehyph/v2.edgepos.site/routes/channels.php on line 16
+[04-Dec-2023 01:24:47 America/New_York] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Artisan" not found in /home/edgehyph/v2.edgepos.site/routes/console.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/edgehyph/v2.edgepos.site/routes/console.php on line 17
+[04-Dec-2023 01:24:47 America/New_York] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Route" not found in /home/edgehyph/v2.edgepos.site/routes/web.php:24
+Stack trace:
+#0 {main}
+  thrown in /home/edgehyph/v2.edgepos.site/routes/web.php on line 24

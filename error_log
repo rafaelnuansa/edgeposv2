@@ -1,0 +1,1 @@
+[04-Dec-2023 01:32:59 America/New_York] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 8.0.30. in /home/edgehyph/v2.edgepos.site/vendor/composer/platform_check.php on line 28

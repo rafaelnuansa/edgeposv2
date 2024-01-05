@@ -1,0 +1,60 @@
+[04-Dec-2023 01:24:46 America/New_York] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home/edgehyph/v2.edgepos.site/config/datatables.php:79
+Stack trace:
+#0 {main}
+  thrown in /home/edgehyph/v2.edgepos.site/config/datatables.php on line 79
+[04-Dec-2023 01:24:46 America/New_York] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home/edgehyph/v2.edgepos.site/config/queue.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/edgehyph/v2.edgepos.site/config/queue.php on line 16
+[04-Dec-2023 01:24:46 America/New_York] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home/edgehyph/v2.edgepos.site/config/app.php:19
+Stack trace:
+#0 {main}
+  thrown in /home/edgehyph/v2.edgepos.site/config/app.php on line 19
+[04-Dec-2023 01:24:46 America/New_York] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home/edgehyph/v2.edgepos.site/config/jwt.php:28
+Stack trace:
+#0 {main}
+  thrown in /home/edgehyph/v2.edgepos.site/config/jwt.php on line 28
+[04-Dec-2023 01:24:46 America/New_York] PHP Fatal error:  Uncaught Error: Call to undefined function resource_path() in /home/edgehyph/v2.edgepos.site/config/view.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/edgehyph/v2.edgepos.site/config/view.php on line 17
+[04-Dec-2023 01:24:46 America/New_York] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home/edgehyph/v2.edgepos.site/config/services.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/edgehyph/v2.edgepos.site/config/services.php on line 18
+[04-Dec-2023 01:24:46 America/New_York] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home/edgehyph/v2.edgepos.site/config/mail.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/edgehyph/v2.edgepos.site/config/mail.php on line 16
+[04-Dec-2023 01:24:46 America/New_York] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home/edgehyph/v2.edgepos.site/config/broadcasting.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/edgehyph/v2.edgepos.site/config/broadcasting.php on line 18
+[04-Dec-2023 01:24:47 America/New_York] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home/edgehyph/v2.edgepos.site/config/cache.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/edgehyph/v2.edgepos.site/config/cache.php on line 18
+[04-Dec-2023 01:24:47 America/New_York] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home/edgehyph/v2.edgepos.site/config/filesystems.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/edgehyph/v2.edgepos.site/config/filesystems.php on line 16
+[04-Dec-2023 01:24:47 America/New_York] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home/edgehyph/v2.edgepos.site/config/database.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/edgehyph/v2.edgepos.site/config/database.php on line 18
+[04-Dec-2023 01:24:47 America/New_York] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home/edgehyph/v2.edgepos.site/config/session.php:21
+Stack trace:
+#0 {main}
+  thrown in /home/edgehyph/v2.edgepos.site/config/session.php on line 21
+[04-Dec-2023 01:24:47 America/New_York] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home/edgehyph/v2.edgepos.site/config/hashing.php:32
+Stack trace:
+#0 {main}
+  thrown in /home/edgehyph/v2.edgepos.site/config/hashing.php on line 32
+[04-Dec-2023 01:24:47 America/New_York] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home/edgehyph/v2.edgepos.site/config/sanctum.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/edgehyph/v2.edgepos.site/config/sanctum.php on line 18
+[04-Dec-2023 01:24:47 America/New_York] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home/edgehyph/v2.edgepos.site/config/logging.php:21
+Stack trace:
+#0 {main}
+  thrown in /home/edgehyph/v2.edgepos.site/config/logging.php on line 21

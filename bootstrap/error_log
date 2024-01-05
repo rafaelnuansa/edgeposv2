@@ -1,0 +1,4 @@
+[04-Dec-2023 01:24:47 America/New_York] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Application" not found in /home/edgehyph/v2.edgepos.site/bootstrap/app.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/edgehyph/v2.edgepos.site/bootstrap/app.php on line 14
