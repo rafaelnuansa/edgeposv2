@@ -2,7 +2,7 @@
 
 @section('content')
 {{-- @dd($product) --}}
-    <form method="POST" action="{{ route('products.update', encrypt($product->id)) }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('products.update', $id) }}" enctype="multipart/form-data">
 
         <div class="row">
 

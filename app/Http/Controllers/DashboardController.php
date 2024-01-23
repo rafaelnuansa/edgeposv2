@@ -62,6 +62,7 @@ class DashboardController extends Controller
 
         // Update the user's active branch ID
         $user->update(['active_branch_id' => $request->input('branch_id')]);
+        $user->cart()->delete();
 
 
         // // Encrypt the branch ID before storing it in the session

@@ -38,7 +38,18 @@
 
             <div class="d-flex align-items-center">
 
+
+
+
+
                 @if (auth()->check() && auth()->user()->active_branch_id)
+
+                @if(request()->is('sales'))
+
+                @include('components.cart-header')
+
+            @endif
+
                 <span class="badge bg-info ms-2">{{ auth()->user()->activeBranch->name }}</span>
                 @else
                 <span class="badge bg-danger ms-2">No Branch Selected</span>
@@ -75,7 +86,10 @@
                                 class="align-middle" data-key="t-logout">Logout</span></a>
                     </div>
                 </div>
+
             </div>
+
+
         </div>
     </div>
 </header>

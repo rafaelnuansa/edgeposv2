@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Customer;
+use App\Models\Hold;
+use App\Models\HoldItem;
 use App\Models\Store;
 use App\Models\Transaction;
 use App\Models\TransactionDetail;
@@ -18,6 +20,7 @@ class SaleController extends Controller
     {
         $user = auth()->user();
         $branchId = $user->active_branch_id;
+        $customers = Customer::all();
         // Check if 'selected_branch' session variable is set
         if (!$branchId) {
             throw new \Exception('Please select a branch first.');
@@ -30,9 +33,10 @@ class SaleController extends Controller
         // $categories = Category::all();
         $categories = Category::where('branch_id',  $branchId)->latest()->get();
         $cartItems = auth()->user()->cart;
-
-        return view('sales.index', compact('products', 'categories', 'cartItems'));
+        return view('sales.index', compact('products', 'customers', 'categories', 'cartItems'));
     }
+
+
 
     public function addToCart(Request $request, $productId)
     {
@@ -44,22 +48,27 @@ class SaleController extends Controller
             ->where('product_id', $product->id)
             ->first();
 
+        // Get the customer ID from the form input, or set it to null if not provided
+        $customerId = $request->input('customer_id', null);
+
         if ($existingCartItem) {
             // If the product is already in the cart, increment the quantity
             $existingCartItem->increment('qty');
         } else {
             // If the product is not in the cart, create a new cart item
             Cart::create([
-                'cashier_id' => $userId,
-                'product_id' => $product->id,
-                'qty'        => 1, // Default quantity is 1, adjust as needed
-                'price'      => $product->price,
+                'cashier_id'  => $userId,
+                'customer_id' => $customerId,
+                'product_id'  => $product->id,
+                'qty'         => 1, // Default quantity is 1, adjust as needed
+                'price'       => $product->price,
             ]);
         }
 
         // Redirect back or to a specific page after adding to cart
         return redirect()->back()->with('success', 'Product added to cart successfully');
     }
+
 
     public function change_qty(Request $request, $cartItemId)
     {
@@ -189,5 +198,115 @@ class SaleController extends Controller
         }
     }
 
+
+
+    public function hold_cart(Request $request)
+    {
+        // Retrieve the user's cart items
+        $cartItems = auth()->user()->cart;
+
+        // Check if the cart is not empty
+        if ($cartItems->isEmpty()) {
+            return redirect()->route('sales.index')->with('error', 'Cart is empty. Add items before holding.');
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // Get customer ID from the form input, or set it to null if not provided
+            $customerId = $request->input('customer_id', null);
+
+            // Create a new hold record
+            $hold = Hold::create([
+                'cashier_id' => auth()->id(),
+                'customer_id' => $customerId,
+                'hold_name' => $request->input('hold_name'), // Optional, set to null if not provided
+            ]);
+
+            // Create hold items for each cart item
+            foreach ($cartItems as $cartItem) {
+                HoldItem::create([
+                    'hold_id' => $hold->id,
+                    'product_id' => $cartItem->product_id,
+                    'qty' => $cartItem->qty,
+                    'price' => $cartItem->price,
+                ]);
+
+                // Remove the cart item as it is now on hold
+                $cartItem->delete();
+            }
+
+            DB::commit();
+
+            return redirect()->route('sales.index')->with('success', 'Cart items held successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Hold failed: ' . $e->getMessage());
+        }
+    }
+
+
+    public function heldOrders()
+    {
+        $heldOrders = Hold::where('cashier_id', auth()->id())->get();
+        return view('sales.held_orders', compact('heldOrders'));
+    }
+
+    public function heldOrderItems($holdId)
+    {
+        $heldOrder = Hold::findOrFail($holdId);
+        $heldItems = HoldItem::where('hold_id', $holdId)->get();
+
+        return view('sales.held_order_items', compact('heldOrder', 'heldItems'));
+    }
+
+
+    public function addCustomer(Request $request)
+    {
+        try {
+            // Get the authenticated user and retrieve the active branch ID
+            $user = auth()->user();
+            $branchId = $user->active_branch_id;
+
+            // Validasi inputan form
+            $request->validate([
+                'name' => 'required',
+                'customer_code' => 'required|unique:customers',
+                'email' => 'required|email|unique:customers',
+                'phone_number' => 'nullable|numeric',
+                'address' => 'nullable|string',
+                'city' => 'nullable|string',
+                'postal_code' => 'nullable|numeric',
+                'country_id' => 'nullable|exists:countries,id',
+                'dob' => 'nullable|date',
+                'credit_limit' => 'nullable|numeric',
+                // Add other validations as needed
+            ]);
+
+            // Create an array with the fields you want to include
+            $customerData = [
+                'name' => $request->input('name'),
+                'customer_code' => $request->input('customer_code'),
+                'email' => $request->input('email'),
+                'phone_number' => $request->input('phone_number'),
+                'address' => $request->input('address'),
+                'city' => $request->input('city'),
+                'postal_code' => $request->input('postal_code'),
+                'country_id' => $request->input('country_id'),
+                'dob' => $request->input('dob'),
+                'credit_limit' => $request->input('credit_limit'),
+                'branch_id' => $branchId,
+            ];
+
+            // Create and save the new customer
+            Customer::create($customerData);
+
+             // Redirect atau kembalikan tanggapan sesuai kebutuhan
+    return redirect()->back()->with('success', 'Customer added successfully');
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
 
 }

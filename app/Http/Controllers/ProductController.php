@@ -134,65 +134,69 @@ class ProductController extends Controller
         // dd($productId);
         $product = Product::find($productId);
         $categories = Category::all();
-        return view('products.edit', compact('product', 'categories'));
+        return view('products.edit', compact('product', 'categories', 'id'));
     }
 
     /**
      * Mengupdate produk yang ada di database.
      */
-    public function update(Request $request, Product $product)
-    {
-        try {
-            // Validasi data yang dikirimkan
-            $request->validate([
-                'name' => 'required|string|max:255',
-                'code' => 'required|string|max:50|unique:products,code,' . $product->id,
-                'barcode' => 'nullable|string|max:50',
-                'description' => 'nullable|string',
-                'price' => 'required|numeric|min:0', // Harga tidak boleh negatif
-                'cost' => 'required|numeric|min:0', // Biaya tidak boleh negatif
-                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Gambar dengan format yang diizinkan
-                'stock' => 'required|integer|min:0', // Stok tidak boleh negatif
-                'category_id' => 'required|exists:categories,id',
-            ]);
 
-            // Periksa jika ada gambar yang diunggah
-            if ($request->file('image')) {
+     public function update(Request $request, $id)
+     {
 
-                // Hapus gambar lama jika ada
-                if ($product->image) {
-                    Storage::delete('public/products/' . $product->image);
-                }
+         try {
+             // Dekripsi ID produk
+             $productId = decrypt($id);
+             $product = Product::find($productId);
 
-                // Simpan gambar baru
-                $image = $request->file('image');
-                $image->storeAs('public/products', $image->hashName());
-                $product->image = $image->hashName();
-            }
+             // Validasi data yang dikirimkan
+             $request->validate([
+                 'name' => 'required|string|max:255',
+                 'code' => 'required|string|max:50|unique:products,code,' . $productId,
+                 'barcode' => 'nullable|string|max:50',
+                 'description' => 'nullable|string',
+                 'price' => 'required|numeric|min:0',
+                 'cost' => 'required|numeric|min:0',
+                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                 'stock' => 'required|integer|min:0',
+                 'category_id' => 'required|exists:categories,id',
+             ]);
 
-            // Update data produk
-            $product->name = $request->input('name');
-            $product->code = $request->input('code');
-            $product->barcode = $request->input('barcode');
-            $product->description = $request->input('description');
-            $product->price = $request->input('price');
-            $product->cost = $request->input('cost');
-            $product->stock = $request->input('stock');
-            $product->category_id = $request->input('category_id');
-            $product->branch_id = Crypt::decrypt(session('selected_branch'));
-            $product->save();
+             // Periksa apakah ada gambar yang diunggah
+             if ($request->hasFile('image')) {
+                 // Hapus gambar lama jika ada
+                 if ($product->image) {
+                     Storage::delete('public/products/' . $product->image);
+                 }
 
-            return redirect()->route('products.index')
-                ->with('success', 'Product updated.');
-        } catch (ModelNotFoundException $e) {
-            return redirect()->route('products.edit', encrypt($product->id))
-                ->with('error', 'Product not found.');
-        } catch (QueryException $e) {
-            return redirect()->route('products.edit', encrypt($product->id))
-                ->with('error', 'Failed to update product. ' . $e->getMessage());
-        }
-    }
+                 // Simpan gambar baru
+                 $image = $request->file('image');
+                 $imagePath = $image->storeAs('public/products', $image->hashName());
+                 $product->image = basename($imagePath);
+             }
 
+             $branchId = auth()->user()->active_branch_id;
+             // Update data produk
+             $product->name = $request->input('name');
+             $product->code = $request->input('code');
+             $product->barcode = $request->input('barcode');
+             $product->description = $request->input('description');
+             $product->price = $request->input('price');
+             $product->cost = $request->input('cost');
+             $product->stock = $request->input('stock');
+             $product->category_id = $request->input('category_id');
+             $product->branch_id = $branchId;
+             $product->save();
+
+             return redirect()->route('products.index')->with('success', 'Product updated.');
+         } catch (ModelNotFoundException $e) {
+             return redirect()->back()->with('error', 'Product not found.');
+         } catch (QueryException $e) {
+             return redirect()->back()->with('error', 'Failed to update product. ' . $e->getMessage());
+         } catch (\Exception $e) {
+             return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
+         }
+     }
 
 
     public function destroy(string $id)

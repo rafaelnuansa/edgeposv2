@@ -16,8 +16,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('type');
             $table->string('address')->nullable();
-            $table->boolean('taxable')->default(false);
-            $table->unsignedBigInteger('tax_id')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
         });

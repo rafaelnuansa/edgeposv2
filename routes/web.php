@@ -24,10 +24,17 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('add-to-cart/{productId}', [App\Http\Controllers\SaleController::class, 'addToCart'])->name('sales.add_to_cart');
     Route::patch('change-qty/{cartItemId}', [App\Http\Controllers\SaleController::class, 'change_qty'])->name('sales.change_qty');
+
     Route::delete('cancel-item/{cartItemId}', [App\Http\Controllers\SaleController::class, 'cancel_item'])->name('sales.cancel_item');
     Route::delete('cancel-cart', [App\Http\Controllers\SaleController::class, 'cancel_cart'])->name('sales.cancel_cart');
+    Route::post('sales/hold', [App\Http\Controllers\SaleController::class, 'hold_cart'])->name('sales.hold_cart');
+
+    Route::get('/sales/held', [App\Http\Controllers\SaleController::class, 'heldOrders'])->name('sales.held_orders');
+    Route::get('/sales/held/{holdId}', [App\Http\Controllers\SaleController::class, 'heldOrderItems'])->name('sales.held_order_items');
+
     Route::get('sales/charge', [App\Http\Controllers\SaleController::class, 'charge'])->name('sales.charge');
     Route::post('sales/proceed', [App\Http\Controllers\SaleController::class, 'proceed'])->name('sales.proceed');
+    Route::post('sales/customer', [App\Http\Controllers\SaleController::class, 'addCustomer'])->name('sales.add_customer');
 
     Route::get('product_sales', [SalesController::class, 'sales_by_product'])->name('sales.product');
     Route::get('category_sales', [SalesController::class, 'sales_by_category'])->name('sales.category');
@@ -54,5 +61,4 @@ Route::group(['middleware' => 'auth'], function () {
 
 
     Route::get('profile', [App\Http\Controllers\ProfileController::class, 'index'])->name('profile.index');
-
 });

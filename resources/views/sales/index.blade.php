@@ -38,8 +38,7 @@
                     <div class="card-body">
                         <div class="row mb-3">
                             <div class="col-md-6">
-
-                                <a href="#" class="btn btn-success w-100">Add Customers</a>
+                                <a href="#" class="btn btn-success w-100">Select Customers</a>
                             </div>
 
                             <div class="col-md-6">
@@ -66,12 +65,13 @@
                                                 <td>{{ $cartItem->price * $cartItem->qty }}</td>
                                                 <td>
                                                     {{-- Cancel Item Form --}}
-                                                    <form action="{{ route('sales.cancel_item', ['cartItemId' => $cartItem->id]) }}"
+                                                    <form
+                                                        action="{{ route('sales.cancel_item', ['cartItemId' => $cartItem->id]) }}"
                                                         method="POST">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-danger">
-                                                            <i class="mdi mdi-delete"></i> <!-- Bootstrap trash icon -->
+                                                        <button type="submit" class="btn btn-icon btn-sm">
+                                                            <i class="ri-close-fill fs-16"></i>
                                                         </button>
                                                     </form>
                                                     {{-- End Cancel Item Form --}}
@@ -86,11 +86,19 @@
 
                 </div>
                 <div class="row">
-                    <div class="col-lg-6"> <a href="#" class="btn btn-dark w-100">Hold Order </a></div>
-                    <div class="col-lg-6"> <a href="{{ route('sales.charge')}}" class="btn btn-danger w-100">Proceed </a></div>
+                    <button type="button" class="btn btn-dark w-100" data-bs-toggle="modal" data-bs-target="#holdModal">
+                        Hold Order
+                    </button>
+                    <div class="col-lg-6">
+                        <a href="{{ route('sales.charge') }}" class="btn btn-danger w-100">Proceed</a>
+                    </div>
                 </div>
             </div>
         </div>
 
     </div>
+
+
+    @include('sales.hold_modal')
+    @include('sales.add_customer_modal')
 @endsection

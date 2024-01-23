@@ -71,14 +71,15 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request);
         try {
             $request->validate([
                 'name' => 'required|unique:categories',
             ]);
 
-            // Decrypt the branch ID before creating the category
-            $branchId = Crypt::decrypt(session('selected_branch'));
 
+            // Decrypt the branch ID before creating the category
+            $branchId = auth()->user()->active_branch_id;
             Category::create([
                 'name' => $request->input('name'),
                 'branch_id' => $branchId,
