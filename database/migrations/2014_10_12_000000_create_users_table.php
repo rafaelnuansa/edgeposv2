@@ -25,8 +25,12 @@ return new class extends Migration
             $table->string('device_name')->nullable();
             $table->boolean('dark_mode')->default(false);
             $table->unsignedBigInteger('branch_id')->nullable();
+            $table->boolean('is_manager')->default(false);
+            $table->boolean('is_admin')->default(false);
+            $table->unsignedBigInteger('active_branch_id')->nullable();
             $table->softDeletes();
         });
+
     }
 
     /**

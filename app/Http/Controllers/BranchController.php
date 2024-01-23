@@ -14,7 +14,6 @@ class BranchController extends Controller
     {
         // Retrieve branches associated with the authenticated user
         $branches = Auth::user()->branches;
-
         return view('branches.index', compact('branches'));
     }
 
@@ -75,6 +74,7 @@ class BranchController extends Controller
 
     public function update(Request $request, $id)
     {
+        // dd($request);
         $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'required|string|max:255',

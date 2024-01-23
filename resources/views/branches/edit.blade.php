@@ -7,7 +7,7 @@
             <h5 class="card-title">Edit Branch</h5>
         </div>
         <div class="card-body">
-            <form action="{{ route('branches.update', $branch->id) }}" method="POST">
+            <form action="{{ route('branches.update', encrypt($branch->id)) }}" method="POST">
                 @csrf
                 @method('PUT')
                 <div class="form-group mb-3">

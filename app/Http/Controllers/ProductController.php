@@ -21,12 +21,15 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         try {
+
+            $user = auth()->user();
+            $branchId = $user->active_branch_id;
             // Check if 'selected_branch' session variable is set
-            if (!Session::has('selected_branch')) {
+            if (!$branchId) {
                 throw new \Exception('Please select a branch first.');
             }
             // Decrypt the branch ID before fetching products
-            $branchId = Crypt::decrypt(session('selected_branch'));
+            // dd($branchId);
             if ($request->ajax()) {
                 // Fetch only products associated with the selected branch
                 $products = Product::where('branch_id', $branchId)->latest()->get();
@@ -87,6 +90,8 @@ class ProductController extends Controller
             $newImageName = $request->file('image')->hashName();
             $request->file('image')->storeAs('public/products', $newImageName);
 
+            $user = auth()->user();
+            $branchId = $user->active_branch_id;
             // Create the product with explicit attributes
             Product::create([
                 'name' => $name,
@@ -98,7 +103,7 @@ class ProductController extends Controller
                 'image' => $newImageName,
                 'stock' => $stock,
                 'category_id' => $category_id,
-                'branch_id' => Crypt::decrypt(session('selected_branch')),
+                'branch_id' => $branchId,
             ]);
 
             return redirect()->route('products.index')
@@ -115,16 +120,19 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        $product = Product::findOrFail($id);
+        $productId = decrypt($id);
+        $product = Product::findOrFail($productId);
         return view('products.show', compact('product'));
     }
 
     /**
      * Menampilkan formulir untuk mengedit produk.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        $product = Product::findOrFail($id);
+        $productId = decrypt($id);
+        // dd($productId);
+        $product = Product::find($productId);
         $categories = Category::all();
         return view('products.edit', compact('product', 'categories'));
     }
@@ -177,10 +185,10 @@ class ProductController extends Controller
             return redirect()->route('products.index')
                 ->with('success', 'Product updated.');
         } catch (ModelNotFoundException $e) {
-            return redirect()->route('products.edit', $product->id)
+            return redirect()->route('products.edit', encrypt($product->id))
                 ->with('error', 'Product not found.');
         } catch (QueryException $e) {
-            return redirect()->route('products.edit', $product->id)
+            return redirect()->route('products.edit', encrypt($product->id))
                 ->with('error', 'Failed to update product. ' . $e->getMessage());
         }
     }

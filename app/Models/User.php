@@ -76,4 +76,13 @@ class User extends Authenticatable implements JWTSubject
     }
 
 
+    public function cart()
+    {
+        return $this->hasMany(Cart::class, 'cashier_id');
+    }
+
+    public function activeBranch()
+    {
+        return $this->belongsTo(Branch::class, 'active_branch_id');
+    }
 }

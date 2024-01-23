@@ -17,8 +17,9 @@
                     <table class="table" id="products-table">
                         <thead>
                             <tr>
-                                <th>No</th>
+                                {{-- <th>No</th> --}}
                                 <th>Name</th>
+                                <th>Category</th>
                                 <th>Code</th>
                                 <th>Sell Price</th>
                                 <th>Cost</th>
@@ -42,7 +43,7 @@
                 responsive: true,
                 ajax: '{!! route('products.index') !!}',
                 columns: [
-                    { data: 'id', name: 'id' },
+                    { data: 'name', name: 'name' },
                     { data: 'name', name: 'name' },
                     { data: 'code', name: 'code' },
                     { data: 'price', name: 'price' },

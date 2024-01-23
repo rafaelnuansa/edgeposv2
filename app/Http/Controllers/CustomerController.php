@@ -11,9 +11,13 @@ class CustomerController extends Controller
     /**
      * Display a listing of the resource.
      */
+
     public function index()
     {
-        $customers = Customer::all();
+        $user = auth()->user();
+        $branchId = $user->active_branch_id;
+        // $customers = Customer::all();
+        $customers = Customer::where('branch_id', $branchId)->latest()->get();
         return view('customers.index', compact('customers'));
     }
 
@@ -35,6 +39,10 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         try {
+            // Get the authenticated user and retrieve the active branch ID
+            $user = auth()->user();
+            $branchId = $user->active_branch_id;
+
             // Validasi inputan form
             $request->validate([
                 'name' => 'required',
@@ -47,17 +55,33 @@ class CustomerController extends Controller
                 'country_id' => 'nullable|exists:countries,id',
                 'dob' => 'nullable|date',
                 'credit_limit' => 'nullable|numeric',
-                // Tambahkan validasi lain sesuai kebutuhan
+                // Add other validations as needed
             ]);
 
-            // Buat dan simpan customer baru
-            Customer::create($request->all());
+            // Create an array with the fields you want to include
+            $customerData = [
+                'name' => $request->input('name'),
+                'customer_code' => $request->input('customer_code'),
+                'email' => $request->input('email'),
+                'phone_number' => $request->input('phone_number'),
+                'address' => $request->input('address'),
+                'city' => $request->input('city'),
+                'postal_code' => $request->input('postal_code'),
+                'country_id' => $request->input('country_id'),
+                'dob' => $request->input('dob'),
+                'credit_limit' => $request->input('credit_limit'),
+                'branch_id' => $branchId,
+            ];
 
-            return redirect()->route('customers.index')->with('success', 'Customer created successfully.');
+            // Create and save the new customer
+            Customer::create($customerData);
+
+            return redirect()->route('customers.index')->with('success', 'New Customer created successfully.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
+
 
 
     /**
@@ -65,7 +89,9 @@ class CustomerController extends Controller
      */
     public function show($id)
     {
-        $customer = Customer::findOrFail($id);
+
+        $decryptId = decrypt($id);
+        $customer = Customer::findOrFail($decryptId);
         return view('customers.show', compact('customer'));
     }
 
@@ -74,7 +100,8 @@ class CustomerController extends Controller
      */
     public function edit($id)
     {
-        $customer = Customer::findOrFail($id);
+        $decryptId = decrypt($id);
+        $customer = Customer::findOrFail($decryptId);
         $countries = Country::all();
         return view('customers.edit', compact('customer', 'countries'));
     }
@@ -84,11 +111,14 @@ class CustomerController extends Controller
      */
     public function update(Request $request, $id)
     {
+
+        $decryptId = decrypt($id);
+        $customer = Customer::findOrFail($decryptId);
         // Validasi inputan form
         $request->validate([
             'name' => 'required',
-            'customer_code' => 'required|unique:customers,customer_code,' . $id,
-            'email' => 'required|email|unique:customers,email,' . $id,
+            'customer_code' => 'required|unique:customers,customer_code,' . $decryptId,
+            'email' => 'required|email|unique:customers,email,' . $decryptId,
             'phone_number' => 'nullable|numeric',
             'address' => 'nullable|string',
             'city' => 'nullable|string',
@@ -99,7 +129,7 @@ class CustomerController extends Controller
         ]);
 
         // Perbarui data customer
-        $customer = Customer::findOrFail($id);
+        $customer = Customer::findOrFail($decryptId);
         $customer->update($request->all());
 
         return redirect()->route('customers.index')->with('success', 'Customer updated successfully.');
@@ -111,7 +141,9 @@ class CustomerController extends Controller
      */
     public function destroy($id)
     {
-        $customer = Customer::findOrFail($id);
+
+        $decryptId = decrypt($id);
+        $customer = Customer::findOrFail($decryptId);
         $customer->delete();
 
         return redirect()->route('customers.index')->with('success', 'Customer deleted successfully.');

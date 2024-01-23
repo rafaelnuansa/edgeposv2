@@ -20,7 +20,7 @@
                                     <th>No</th>
                                     <th>Code</th>
                                     <th>Name</th>
-                                    <th>Action</th>
+                                    {{-- <th>Action</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -29,7 +29,7 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $country->code }}</td>
                                         <td>{{ $country->name }}</td>
-                                        <td>
+                                        {{-- <td>
                                             <a href="{{ route('countries.show', $country->id) }}"
                                                 class="btn btn-sm btn-primary">View</a>
                                             <a href="{{ route('countries.edit', $country->id) }}"
@@ -41,7 +41,7 @@
                                                 <button type="submit" class="btn btn-sm btn-danger"
                                                     onclick="return confirm('Are you sure you want to delete this country?')">Delete</button>
                                             </form>
-                                        </td>
+                                        </td> --}}
                                     </tr>
                                 @endforeach
                             </tbody>

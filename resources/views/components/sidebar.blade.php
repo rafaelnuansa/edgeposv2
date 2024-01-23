@@ -90,6 +90,11 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="{{ route('printers.index') }}">
+                        <i class="mdi mdi-printer"></i> <span data-key="t-printers">Printers</span>
+                    </a>
+                </li>
 
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="{{ route('countries.index') }}">

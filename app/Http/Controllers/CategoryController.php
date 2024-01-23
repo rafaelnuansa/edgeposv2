@@ -17,7 +17,9 @@ class CategoryController extends Controller
     {
         try {
             // Decrypt the branch ID before fetching categories
-            $branchId = Crypt::decrypt(session('selected_branch'));
+            $user = auth()->user();
+            $branchId = $user->active_branch_id;
+
             $categories = Category::where('branch_id', $branchId)->get();
             return view('categories.index', compact('categories'));
         } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
@@ -32,10 +34,11 @@ class CategoryController extends Controller
     public function getCategories()
 {
     try {
-        // Decrypt the branch ID before fetching categories
-        $branchId = Crypt::decrypt(session('selected_branch'));
+        $user = auth()->user();
+        $branchId = $user->active_branch_id;
+
         $categories = Category::where('branch_id', $branchId)->get();
-        
+
         // Return categories in JSON format
         return Response::json([
             'success' => true,

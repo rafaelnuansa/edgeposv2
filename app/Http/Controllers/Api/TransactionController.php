@@ -15,7 +15,6 @@ class TransactionController extends Controller
     {
         // Get all transactions from the latest with pagination
         $transactions = Transaction::with('details.product')->latest()->paginate(10);
-
         return response()->json([
             'success' => true,
             'message' => 'Transactions retrieved successfully',

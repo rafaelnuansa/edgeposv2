@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-    <form method="POST" action="{{ route('products.update', $product->id) }}" enctype="multipart/form-data">
+{{-- @dd($product) --}}
+    <form method="POST" action="{{ route('products.update', encrypt($product->id)) }}" enctype="multipart/form-data">
 
         <div class="row">
 

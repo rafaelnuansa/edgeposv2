@@ -37,23 +37,11 @@
             </div>
 
             <div class="d-flex align-items-center">
-                <div class="dropdown ms-1 topbar-head-dropdown header-item">
-                    <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle shadow-none" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <img id="header-lang-img" src="assets/images/flags/us.svg" alt="Header Language" height="20" class="rounded">
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-end" style="">
 
-                        <!-- item-->
-                        <a href="javascript:void(0);" class="dropdown-item notify-item language py-2" data-lang="en" title="English">
-                            <img src="assets/images/flags/us.svg" alt="user-image" class="me-2 rounded" height="18">
-                            <span class="align-middle">English</span>
-                        </a>
-
-                    </div>
-                </div>
-
-                @if (session('selected_branch_name'))
-                    <span class="badge bg-info ms-2">Branch : {{ session('selected_branch_name') }}</span>
+                @if (auth()->check() && auth()->user()->active_branch_id)
+                <span class="badge bg-info ms-2">{{ auth()->user()->activeBranch->name }}</span>
+                @else
+                <span class="badge bg-danger ms-2">No Branch Selected</span>
                 @endif
 
                 <div class="dropdown ms-sm-3 header-item topbar-user">
@@ -77,6 +65,10 @@
                         <!-- item-->
                         <h6 class="dropdown-header">Welcome {{ auth()->user()->name }}!</h6>
                         <div class="dropdown-divider"></div>
+
+                        <a class="dropdown-item" href="#"><i
+                            class="bx bx-user text-muted fs-16 align-middle me-1"></i> <span
+                            class="align-middle" data-key="t-logout">Profile</span></a>
 
                         <a class="dropdown-item" href="{{ route('logout') }}"><i
                                 class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span

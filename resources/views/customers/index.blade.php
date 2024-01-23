@@ -40,9 +40,9 @@
                             <td>{{ $customer->email }}</td>
                             <td>{{ $customer->phone_number }}</td>
                             <td>
-                                <a href="{{ route('customers.show', $customer->id) }}" class="btn btn-sm btn-info">View</a>
-                                <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-sm btn-primary">Edit</a>
-                                <form action="{{ route('customers.destroy', $customer->id) }}" method="POST"
+                                <a href="{{ route('customers.show', encrypt($customer->id)) }}" class="btn btn-sm btn-info">View</a>
+                                <a href="{{ route('customers.edit', encrypt($customer->id)) }}" class="btn btn-sm btn-primary">Edit</a>
+                                <form action="{{ route('customers.destroy', encrypt($customer->id)) }}" method="POST"
                                     style="display: inline-block;">
                                     @csrf
                                     @method('DELETE')
