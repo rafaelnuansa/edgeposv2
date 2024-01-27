@@ -44,11 +44,11 @@
 
                 @if (auth()->check() && auth()->user()->active_branch_id)
 
-                @if(request()->is('sales'))
+                {{-- @if(request()->is('sales'))
 
                 @include('components.cart-header')
 
-            @endif
+            @endif --}}
 
                 <span class="badge bg-info ms-2">{{ auth()->user()->activeBranch->name }}</span>
                 @else

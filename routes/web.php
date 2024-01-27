@@ -22,11 +22,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('sales', [App\Http\Controllers\SaleController::class, 'index'])->name('sales.index');
     Route::post('sales', [App\Http\Controllers\SaleController::class, 'store'])->name('sales.store');
 
-    Route::get('add-to-cart/{productId}', [App\Http\Controllers\SaleController::class, 'addToCart'])->name('sales.add_to_cart');
+    Route::get('sales/add_to_cart/{productId}', [App\Http\Controllers\SaleController::class, 'addToCart'])->name('sales.add_to_cart');
     Route::patch('change-qty/{cartItemId}', [App\Http\Controllers\SaleController::class, 'change_qty'])->name('sales.change_qty');
 
-    Route::delete('cancel-item/{cartItemId}', [App\Http\Controllers\SaleController::class, 'cancel_item'])->name('sales.cancel_item');
-    Route::delete('cancel-cart', [App\Http\Controllers\SaleController::class, 'cancel_cart'])->name('sales.cancel_cart');
+    Route::delete('sales/cancel_item/{cartItemId}', [App\Http\Controllers\SaleController::class, 'cancel_item'])->name('sales.cancel_item');
+    Route::delete('sales/cancel-cart', [App\Http\Controllers\SaleController::class, 'cancel_cart'])->name('sales.cancel_item');
     Route::post('sales/hold', [App\Http\Controllers\SaleController::class, 'hold_cart'])->name('sales.hold_cart');
 
     Route::get('/sales/held', [App\Http\Controllers\SaleController::class, 'heldOrders'])->name('sales.held_orders');
@@ -38,6 +38,9 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('product_sales', [SalesController::class, 'sales_by_product'])->name('sales.product');
     Route::get('category_sales', [SalesController::class, 'sales_by_category'])->name('sales.category');
+
+    Route::get('fetchProductsAndCategories', [App\Http\Controllers\SaleController::class, 'fetchProductsAndCategories'])->name('sales.fetchProductsAndCategories');
+    Route::get('/fetchCart', [App\Http\Controllers\SaleController::class, 'fetchCart'])->name('fetch.cart');
 
 
     Route::get('transactions', [App\Http\Controllers\TransactionController::class, 'index'])->name('transactions.index');

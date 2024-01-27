@@ -12,6 +12,7 @@ use App\Models\HoldItem;
 use App\Models\Store;
 use App\Models\Transaction;
 use App\Models\TransactionDetail;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
 class SaleController extends Controller
@@ -23,7 +24,8 @@ class SaleController extends Controller
         $customers = Customer::all();
         // Check if 'selected_branch' session variable is set
         if (!$branchId) {
-            throw new \Exception('Please select a branch first.');
+            // throw new \Exception('Please select a branch first.');
+            return redirect()->route('dashboard')->with('error','Please select a branch first');
         }
 
         // Retrieve a list of products or categories to display on the POS page
@@ -36,8 +38,51 @@ class SaleController extends Controller
         return view('sales.index', compact('products', 'customers', 'categories', 'cartItems'));
     }
 
+    public function fetchCart()
+    {
+        try {
+            $userId = auth()->id();
+            $cartItems = Cart::with('product')->where('cashier_id', $userId)->get();
 
+            return new JsonResponse(['cartItems' => $cartItems]);
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
 
+    public function fetchProductsAndCategories(Request $request)
+    {
+        $user = auth()->user();
+        $branchId = $user->active_branch_id;
+
+        // Check if 'selected_branch' session variable is set
+        if (!$branchId) {
+            return new JsonResponse(['error' => 'Please select a branch first.'], 400);
+        }
+
+        // Retrieve a list of products and categories to display on the POS page
+        $query = Product::where('branch_id', $branchId);
+
+        // Handle search query
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                    ->orWhere('description', 'like', "%$search%");
+            });
+        }
+
+        // Handle category filtering
+        if ($request->has('categories')) {
+            $categories = $request->input('categories');
+            $query->whereIn('category_id', $categories);
+        }
+
+        $products = $query->latest()->get();
+        $categories = Category::where('branch_id', $branchId)->latest()->get();
+
+        return new JsonResponse(['products' => $products, 'categories' => $categories]);
+    }
     public function addToCart(Request $request, $productId)
     {
         $product = Product::findOrFail($productId);
@@ -48,9 +93,6 @@ class SaleController extends Controller
             ->where('product_id', $product->id)
             ->first();
 
-        // Get the customer ID from the form input, or set it to null if not provided
-        $customerId = $request->input('customer_id', null);
-
         if ($existingCartItem) {
             // If the product is already in the cart, increment the quantity
             $existingCartItem->increment('qty');
@@ -58,15 +100,14 @@ class SaleController extends Controller
             // If the product is not in the cart, create a new cart item
             Cart::create([
                 'cashier_id'  => $userId,
-                'customer_id' => $customerId,
                 'product_id'  => $product->id,
                 'qty'         => 1, // Default quantity is 1, adjust as needed
                 'price'       => $product->price,
             ]);
         }
 
-        // Redirect back or to a specific page after adding to cart
-        return redirect()->back()->with('success', 'Product added to cart successfully');
+        // Return a JSON response with success message
+        return new JsonResponse(['success' => true, 'message' => 'Product added to cart successfully']);
     }
 
 
@@ -86,13 +127,16 @@ class SaleController extends Controller
 
     public function cancel_item($cartItemId)
     {
-        $cartItem = Cart::findOrFail($cartItemId);
+        try {
+            $cartItem = Cart::findOrFail($cartItemId);
 
-        $cartItem->delete();
+            $cartItem->delete();
 
-        // You can return a response or redirect as needed
-        // return response()->json(['status' => 'success']);
-        return redirect()->back()->with('success', 'Clear item success');
+            return response()->json(['status' => 'success']);
+        } catch (\Exception $e) {
+            // Handle exception if needed
+            return response()->json(['status' => 'error', 'error' => $e->getMessage()], 500);
+        }
     }
 
     public function cancel_cart()

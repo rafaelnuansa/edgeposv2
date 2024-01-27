@@ -42,8 +42,7 @@
                                     <td>{{ $cartItem->price * $cartItem->qty }}</td>
                                     <td>
                                         {{-- Cancel Item Form --}}
-                                        <form
-                                            action="{{ route('sales.cancel_item', ['cartItemId' => $cartItem->id]) }}"
+                                        <form action="{{ route('sales.cancel_item', ['cartItemId' => $cartItem->id]) }}"
                                             method="POST">
                                             @csrf
                                             @method('DELETE')
