@@ -26,8 +26,6 @@
                        </select>
                        <!-- Tombol untuk menampilkan modal tambah pelanggan baru -->
 
-
-
                    </div>
                    <button type="submit" class="btn btn-dark w-100">Hold Order</button>
                </form>

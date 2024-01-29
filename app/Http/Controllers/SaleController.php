@@ -22,21 +22,27 @@ class SaleController extends Controller
         $user = auth()->user();
         $branchId = $user->active_branch_id;
         $customers = Customer::all();
+
         // Check if 'selected_branch' session variable is set
         if (!$branchId) {
-            // throw new \Exception('Please select a branch first.');
-            return redirect()->route('dashboard')->with('error','Please select a branch first');
+            return redirect()->route('dashboard')->with('error', 'Please select a branch first');
         }
 
         // Retrieve a list of products or categories to display on the POS page
-        // $products = Product::all();
         $products = Product::where('branch_id', $branchId)->latest()->get();
+
+        // Retrieve held orders with holdItems
+        $heldOrders = Hold::with('holdItems')->where('cashier_id', auth()->id())->get();
+        // Count the number of held orders
+        $countHeldOrders = $heldOrders->count();
 
         // $categories = Category::all();
         $categories = Category::where('branch_id',  $branchId)->latest()->get();
         $cartItems = auth()->user()->cart;
-        return view('sales.index', compact('products', 'customers', 'categories', 'cartItems'));
+
+        return view('sales.index', compact('products', 'customers', 'categories', 'cartItems', 'heldOrders', 'countHeldOrders'));
     }
+
 
     public function fetchCart()
     {
@@ -83,6 +89,8 @@ class SaleController extends Controller
 
         return new JsonResponse(['products' => $products, 'categories' => $categories]);
     }
+
+
     public function addToCart(Request $request, $productId)
     {
         $product = Product::findOrFail($productId);
@@ -242,8 +250,6 @@ class SaleController extends Controller
         }
     }
 
-
-
     public function hold_cart(Request $request)
     {
         // Retrieve the user's cart items
@@ -288,7 +294,6 @@ class SaleController extends Controller
             return redirect()->back()->with('error', 'Hold failed: ' . $e->getMessage());
         }
     }
-
 
     public function heldOrders()
     {
@@ -350,6 +355,51 @@ class SaleController extends Controller
 
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function resume_held($holdId)
+    {
+        try {
+            DB::beginTransaction();
+
+            // Find the held order
+            $heldOrder = Hold::findOrFail($holdId);
+
+            // Create cart items for each hold item
+            foreach ($heldOrder->holdItems as $holdItem) {
+                Cart::create([
+                    'cashier_id' => auth()->id(),
+                    'product_id' => $holdItem->product_id,
+                    'qty'        => $holdItem->qty,
+                    'price'      => $holdItem->price,
+                ]);
+            }
+
+            // Delete the hold order and related items
+            $heldOrder->holdItems()->delete();
+            $heldOrder->delete();
+
+            DB::commit();
+
+            return new JsonResponse(['status' => 'success', 'message' => 'Held order resumed successfully']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return new JsonResponse(['status' => 'error', 'message' => 'Failed to resume held order: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function fetchHeldOrders()
+    {
+        try {
+            $user = auth()->user();
+            $heldOrders = Hold::with('holdItems')
+                ->where('cashier_id', $user->id)
+                ->get();
+
+            return new JsonResponse(['status' => 'success', 'heldOrders' => $heldOrders]);
+        } catch (\Exception $e) {
+            return new JsonResponse(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
     }
 

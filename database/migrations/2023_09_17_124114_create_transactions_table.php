@@ -24,6 +24,7 @@ return new class extends Migration
             $table->decimal('total_amount', 8,2)->default(0);
             $table->decimal('remaining_amount', 8,2)->default(0);
             $table->string('status')->default('unpaid');
+            $table->enum('order_type', ['dine_in', 'take_away'])->default('dine_in');
             $table->timestamps();
             //relationship users
             $table->foreign('cashier_id')->references('id')->on('users')->cascadeOnDelete()->cascadeOnUpdate();

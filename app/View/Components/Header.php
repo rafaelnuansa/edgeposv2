@@ -21,6 +21,14 @@ class Header extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.header');
+
+        $currentTime = now();
+        $user = auth()->user();
+        $selectedBranch = $user->active_branch_id;
+        $branch = encrypt($selectedBranch);
+        $branches = $user->branches;
+
+
+        return view('components.header', compact('branches', 'selectedBranch'));
     }
 }

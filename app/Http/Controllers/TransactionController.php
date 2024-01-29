@@ -30,8 +30,15 @@ class TransactionController extends Controller
         $transaction = Transaction::with('details.product')->where('id', $id)->first();
 
         try {
+            $activePrinter = Printer::where('is_active', true)->first();
+
+            if (!$activePrinter) {
+                return redirect()->back()->with('error', 'No active printer found.');
+            }
             // Initialize the printer connector (you need to specify the correct printer path)
-            $connector = new WindowsPrintConnector("POS58 Printer");
+            // $connector = new WindowsPrintConnector("===POS58 Printer");
+            $connector = new WindowsPrintConnector($activePrinter->name);
+
 
             // Initialize the printer
             $printer = new Printer($connector);

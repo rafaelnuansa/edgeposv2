@@ -109,7 +109,7 @@
                             </div>
                             <div class="col-3 p-0 text-right"><span><i class="la la-edit discount-on-subtotal-popover"></i>
                                 </span></div>
-                        </div> <!---->
+                        </div>
                         <div class="row mx-0 px-3 py-2 border-top border-bottom">
                             <div class="col-6 p-0"><span class="font-weight-bold">
                                     Total
@@ -143,7 +143,7 @@
                             </a>
                         </div>
                         <div class="row mx-0">
-                            <a href="#" class="col-4 p-0 text-center border-right hold-items disabled">
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#heldOrdersModal" class="col-4 p-0 text-center border-right hold-items disabled">
                                 <i class="la la-recycle la-2x p-2 app-color-text hold-icon"></i></a>
                             <a href="#" data-bs-toggle="modal" data-bs-target="#holdModal"
                                 class="col-4 p-0 text-center border-right hold-cart"><i
@@ -161,6 +161,7 @@
 
     @include('sales.hold_modal')
     @include('sales.add_customer_modal')
+    @include('sales.held_order_modal')
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     @push('scripts')
         <script>

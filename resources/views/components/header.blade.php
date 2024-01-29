@@ -41,19 +41,26 @@
 
 
 
+                <div class="dropdown ms-1 topbar-head-dropdown header-item">
+                    <button type="button" class="btn btn-dark btn-sm shadow-none" data-bs-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
 
                 @if (auth()->check() && auth()->user()->active_branch_id)
+                     {{ auth()->user()->activeBranch->name }}
+                        @else
+                            No Branch Selected
+                        @endif
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end" style="">
+                        @foreach ($branches as $branch)
+                            <a href="{{ route('select.branch', ['branch_id' => $branch->id]) }}"
+                                class="dropdown-item notify-item language py-2" title="{{ $branch->name }}">
+                                <span class="align-middle">{{ $branch->name }}</span>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
 
-                {{-- @if(request()->is('sales'))
-
-                @include('components.cart-header')
-
-            @endif --}}
-
-                <span class="badge bg-info ms-2">{{ auth()->user()->activeBranch->name }}</span>
-                @else
-                <span class="badge bg-danger ms-2">No Branch Selected</span>
-                @endif
 
                 <div class="dropdown ms-sm-3 header-item topbar-user">
                     <button type="button" class="btn shadow-none" id="page-header-user-dropdown"
@@ -78,8 +85,8 @@
                         <div class="dropdown-divider"></div>
 
                         <a class="dropdown-item" href="#"><i
-                            class="bx bx-user text-muted fs-16 align-middle me-1"></i> <span
-                            class="align-middle" data-key="t-logout">Profile</span></a>
+                                class="bx bx-user text-muted fs-16 align-middle me-1"></i> <span class="align-middle"
+                                data-key="t-logout">Profile</span></a>
 
                         <a class="dropdown-item" href="{{ route('logout') }}"><i
                                 class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span
